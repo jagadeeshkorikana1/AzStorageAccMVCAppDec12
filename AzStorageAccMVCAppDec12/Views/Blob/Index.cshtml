@@ -1,0 +1,33 @@
+﻿
+@model IEnumerable<AzStorageAccMVCAppDec12.Models.BlobItemViewModel>
+@{ ViewBag.Title = "Blob Explorer"; Layout = "~/Views/Shared/_Layout.cshtml"; }
+@if (TempData["Message"] != null) { <div class="alert success">@TempData["Message"]</div> }
+@if (TempData["Error"] != null) { <div class="alert error">@TempData["Error"]</div> }
+<h2>Upload a file</h2>
+<form action="@Url.Action("Upload", "Blob")" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+<h2>Blobs</h2>
+<table class="table">
+    <thead><tr><th>Name</th><th>Size</th><th>Content Type</th><th>Last Modified</th><th>Actions</th></tr></thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>@item.Name</td>
+            <td>@(item.Size.HasValue ? String.Format("{0:N0}", item.Size.Value) : "-")</td>
+            <td>@item.ContentType</td>
+            <td>@(item.LastModified.HasValue ? item.LastModified.Value.LocalDateTime.ToString("yyyy-MM-dd HH:mm") : "-")</td>
+            <td>
+                <a href="@Url.Action("Download", "Blob", new { name = item.Name })">Download</a> |
+                <form action="@Url.Action("Delete", "Blob")" method="post" style="display:inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="name" value="@item.Name" />
+                    <button type="submit" onclick="return confirm('Delete @item.Name ?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
