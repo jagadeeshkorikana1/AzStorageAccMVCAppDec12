@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: [self-hosted, windows]
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -53,4 +53,5 @@ jobs:
           app-name: 'storageacctestdec12'
           slot-name: 'Production'
           package: .
+
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F63FD698E80747D7882C216AAD2FB311 }}
